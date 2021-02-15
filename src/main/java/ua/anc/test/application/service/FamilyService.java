@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.anc.test.application.entity.Client;
 import ua.anc.test.application.entity.Family;
+import ua.anc.test.application.exception.EntityNotFoundException;
 import ua.anc.test.application.pojo.family.FamilyPOJO;
 import ua.anc.test.application.pojo.family.FamilyReadPOJO;
 import ua.anc.test.application.repo.ClientRepo;
@@ -21,7 +22,15 @@ public class FamilyService {
     @Autowired
     private ClientRepo clientRepo;
 
-    private FamilyReadPOJO toRead (Family family){
+    private Family getFamilyFromRepository(UUID id) {
+        return familyRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(Family.class, id));
+    }
+
+    private Client getClientFromRepository(UUID id) {
+        return clientRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(Client.class, id));
+    }
+
+    private FamilyReadPOJO toRead(Family family) {
         FamilyReadPOJO familyReadPOJO = new FamilyReadPOJO();
         familyReadPOJO.setName(family.getName());
         familyReadPOJO.setId(family.getId());
@@ -29,10 +38,10 @@ public class FamilyService {
         return familyReadPOJO;
     }
 
-    private Set<Client> translateToClient(Set<UUID> ids){
+    private Set<Client> translateToClient(Set<UUID> ids) {
         Set<Client> clients = new HashSet<>();
         ids.forEach(i ->{
-            clients.add(clientRepo.findByIdOrError(i));
+            clients.add(getClientFromRepository(i));
         });
         return clients;
     }
@@ -46,11 +55,11 @@ public class FamilyService {
     }
 
     public FamilyReadPOJO getFamily(UUID id){
-        return toRead(familyRepo.findByIdOrError(id));
+        return toRead(getFamilyFromRepository(id));
     }
 
     public FamilyReadPOJO patchFamily (UUID id, FamilyPOJO patch) {
-        Family family = familyRepo.findByIdOrError(id);
+        Family family = getFamilyFromRepository(id);
         family.setName(patch.getName());
         if(patch.getClients() != null){
             family.setClients(translateToClient(patch.getClients()));
@@ -66,7 +75,7 @@ public class FamilyService {
         if (create.getClients() != null){
             family.setClients(translateToClient(create.getClients()));
         }else{
-            Client client = clientRepo.findByIdOrError(clientId);
+            Client client = getClientFromRepository(clientId);
             Set<Client> clients = new HashSet<>();
             clients.add(client);
             family.setClients(clients);
@@ -76,7 +85,7 @@ public class FamilyService {
     }
 
     public FamilyReadPOJO update(UUID id, FamilyPOJO update){
-        Family family = familyRepo.findByIdOrError(id);
+        Family family = getFamilyFromRepository(id);
         if(update.getName() != null){
             family.setName(update.getName());
         }
@@ -88,6 +97,6 @@ public class FamilyService {
     }
 
     public void delete(UUID id){
-        familyRepo.delete(familyRepo.findByIdOrError(id));
+        familyRepo.delete(getFamilyFromRepository(id));
     }
 }

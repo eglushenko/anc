@@ -4,6 +4,7 @@ package ua.anc.test.application.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.anc.test.application.entity.Family;
+import ua.anc.test.application.exception.EntityNotFoundException;
 import ua.anc.test.application.pojo.client.ClientPOJO;
 import ua.anc.test.application.pojo.client.ClientReadPOJO;
 import ua.anc.test.application.entity.Client;
@@ -21,15 +22,19 @@ public class ClientService {
     @Autowired
     private FamilyRepo familyRepo;
 
-    private Set<Family> translateToFamily(Set<UUID> ids){
+    private Client getClientFromRepository(UUID id) {
+        return clientRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(Client.class, id));
+    }
+
+    private Set<Family> translateToFamily(Set<UUID> ids) {
         Set<Family> families = new HashSet<>();
-        ids.forEach(i ->{
+        ids.forEach(i -> {
             families.add(familyRepo.findByIdOrError(i));
         });
         return families;
     }
 
-    private Set<UUID> translateToUUID(Set<Family> families){
+    private Set<UUID> translateToUUID(Set<Family> families) {
         Set<UUID> uuids = new HashSet<>();
         families.forEach(f ->{
             uuids.add(f.getId());
@@ -63,7 +68,7 @@ public class ClientService {
 
 
     public ClientReadPOJO getClient(UUID id){
-       return toRead(clientRepo.findByIdOrError(id));
+        return toRead(getClientFromRepository(id));
     }
 
 
@@ -82,7 +87,7 @@ public class ClientService {
     }
 
     public ClientReadPOJO update (UUID id, ClientPOJO update){
-        Client client = clientRepo.findByIdOrError(id);
+        Client client = getClientFromRepository(id);
 
         if (update.getFirstName()!= null){
             client.setFirstName(update.getFirstName());
@@ -117,7 +122,7 @@ public class ClientService {
     }
 
     public ClientReadPOJO patchClient(UUID id,ClientPOJO patch){
-        Client client = clientRepo.findByIdOrError(id);
+        Client client = getClientFromRepository(id);
         client.setFirstName(patch.getFirstName());
         client.setLastName(patch.getLastName());
         client.setPatronymic(patch.getPatronymic());
@@ -130,6 +135,6 @@ public class ClientService {
     }
 
     public void delete(UUID id){
-        clientRepo.delete(clientRepo.findByIdOrError(id));
+        clientRepo.delete(getClientFromRepository(id));
     }
 }
