@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import ua.anc.test.application.entity.Family;
 import ua.anc.test.application.enums.ClientPriorityStatus;
+import ua.anc.test.application.enums.EducationStatus;
 import ua.anc.test.application.enums.MaritalStatus;
 
 import java.time.LocalDate;
@@ -27,7 +28,7 @@ public class ClientReadPOJO {
 
     private LocalDate dateOfBirth;
 
-    private String education;
+    private EducationStatus education;
 
     private ClientPriorityStatus clientPriorityStatus;
 

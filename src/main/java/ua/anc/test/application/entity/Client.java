@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ua.anc.test.application.enums.ClientPriorityStatus;
+import ua.anc.test.application.enums.EducationStatus;
 import ua.anc.test.application.enums.MaritalStatus;
 
 import javax.persistence.*;
@@ -31,7 +32,8 @@ public class Client {
 
     private LocalDate dateOfBirth;
 
-    private String education;
+    @Enumerated(EnumType.STRING)
+    private EducationStatus education;
 
     @Enumerated(EnumType.STRING)
     private ClientPriorityStatus clientPriorityStatus;
