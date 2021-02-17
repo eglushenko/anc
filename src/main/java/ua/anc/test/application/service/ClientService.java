@@ -27,7 +27,7 @@ public class ClientService {
     }
     
     private Family getFamilyFromRepository(UUID id) {
-        return familyRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(Client.class, id));
+        return familyRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(Family.class, id));
     }
 
     private Set<Family> translateToFamily(Set<UUID> ids) {
