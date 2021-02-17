@@ -1,10 +1,12 @@
-kind: pipeline
-type: docker
+kind: pileline
 name: default
 
+clone:
+  disable: true
+
 steps:
-- name: test
-  image: maven:3-jdk-8
+- name: test_drone
+  image: alpine:3.9
   commands:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-  - mvn test -B
+  - echo "show hello world by drone"
+  - echo $(pwd)
