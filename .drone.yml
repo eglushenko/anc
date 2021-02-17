@@ -1,8 +1,13 @@
-pipeline:
-  build:
-    image: 3.3.9-jdk-8
-    pull: true
+kind: pipeline
+name: default
+type: docker
+
+steps:
+  - name: compile
+    image: maven:3-jdk-8
     commands:
-      - mvn clean
-      - mvn install
-      - mvn deploy
+      - mvn compile -B -U
+  - name: test
+    image: maven:3-jdk-8
+    commands:
+      - mvn test -B
