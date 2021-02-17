@@ -1,10 +1,9 @@
 kind: pipeline
-type: docker
-name: ci-java8
-
+name: anc
 
 steps:
-  - name: build
-    image: maven:3-jdk-8
-    commands:
-      - mvn install -s settings.xml -B -U
+- name: anc
+  image: maven:3-jdk-8
+  commands:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn test -B
