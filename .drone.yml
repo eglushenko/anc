@@ -1,9 +1,8 @@
-kind: pipeline
-name: anc
-
-steps:
-- name: anc
-  image: maven:3-jdk-8
-  commands:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-  - mvn test -B
+pipeline:
+  build:
+    image: 3.3.9-jdk-8
+    pull: true
+    commands:
+      - mvn clean
+      - mvn install
+      - mvn deploy
