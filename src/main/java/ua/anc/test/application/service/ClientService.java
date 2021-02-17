@@ -25,11 +25,15 @@ public class ClientService {
     private Client getClientFromRepository(UUID id) {
         return clientRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(Client.class, id));
     }
+    
+    private Family getFamilyFromRepository(UUID id) {
+        return familyRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(Client.class, id));
+    }
 
     private Set<Family> translateToFamily(Set<UUID> ids) {
         Set<Family> families = new HashSet<>();
         ids.forEach(i -> {
-            families.add(familyRepo.findByIdOrError(i));
+            families.add(getFamilyFromRepository(i));
         });
         return families;
     }
