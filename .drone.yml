@@ -1,9 +1,14 @@
-image: maven:3.6.3-jdk-8
+kind: pipeline
+type: docker
+name: default
 
-pipelines:
-  default:
-    - step:
-        caches:
-          - maven
-        script: # Modify the commands below to build your repository.
-          - mvn -B verify # -B batch mode makes Maven less verbose
+steps:
+  - name: compile
+    image: maven:3.6.3-jdk-8
+    commands:
+      - mvn
+
+  - name: test
+    image: maven:3.6.3-jdk-8
+    commands:
+      - mvn test
